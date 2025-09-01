@@ -10,6 +10,18 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    # Add MongoDB service
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -17,6 +29,13 @@ jobs:
       # Backend setup
       - name: Install backend dependencies
         run: npm install --prefix backend
+
+      # Add a MongoDB check step
+      - name: Verify MongoDB connection
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mongodb-clients
+          mongosh --eval "db.serverStatus()" || mongo --eval "db.serverStatus()"
 
       - name: Run backend tests
         run: npm test --prefix backend
