@@ -34,6 +34,7 @@ const UserForm = ({ fetchUsers }) => {
           <label>Name:</label>
           <input 
             type="text" 
+            placeholder="Name"
             value={name} 
             onChange={(e) => setName(e.target.value)} 
             required 
@@ -43,12 +44,13 @@ const UserForm = ({ fetchUsers }) => {
           <label>Email:</label>
           <input 
             type="email" 
+            placeholder="Email"
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required 
           />
         </div>
-        <button type="submit">Register</button>
+        <button type="submit">Add User</button>
       </form>
     </div>
   );

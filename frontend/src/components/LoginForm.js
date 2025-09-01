@@ -13,7 +13,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post('/api/users/login', { email });
-      setMessage(`Welcome back, ${response.data.name}!`);
+      setMessage(`Login successful - Welcome back, ${response.data.name}!`);
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }
@@ -29,6 +29,7 @@ const LoginForm = () => {
           <label>Email:</label>
           <input 
             type="email" 
+            placeholder="Email"
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required 
