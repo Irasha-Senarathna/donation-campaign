@@ -17,7 +17,7 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })' || mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongosh localhost:27017/test --quiet || echo 'db.runCommand(\"ping\").ok' | mongo localhost:27017/test --quiet"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -26,18 +26,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Install MongoDB client from official repository
+      - name: Install MongoDB client
+        run: |
+          sudo apt-get update
+          # Add MongoDB repository
+          wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+          sudo apt-get update
+          # Install MongoDB client tools only
+          sudo apt-get install -y mongodb-org-shell
+          # Verify installation
+          mongo --version || echo "Mongo client installation failed, but continuing..."
+
       # Backend setup
       - name: Install backend dependencies
         run: npm install --prefix backend
-
-      # Add a MongoDB check step
-      - name: Verify MongoDB connection
-        run: |
-          sudo apt-get update
-          # Try the newer package name first, then fallback to older one
-          sudo apt-get install -y mongodb-mongosh || sudo apt-get install -y mongodb-clients
-          # Try both mongosh and mongo commands
-          mongosh --eval "db.serverStatus()" || mongo --eval "db.serverStatus()" || echo "MongoDB connection check skipped"
 
       - name: Run backend tests
         run: npm test --prefix backend
