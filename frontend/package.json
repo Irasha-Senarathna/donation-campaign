@@ -13,6 +13,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+      "test:ui": "start-server-and-test \"npm start\" http://localhost:3000 \"mocha -r ts-node/register ../tests/ui/**/*.test.ts --timeout 60000\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
