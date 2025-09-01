@@ -17,7 +17,7 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongosh localhost:27017/test --quiet || echo 'db.runCommand(\"ping\").ok' | mongo localhost:27017/test --quiet"
+          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongo localhost:27017/test --quiet"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -26,18 +26,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Install MongoDB client from official repository
-      - name: Install MongoDB client
+      # Verify MongoDB connection using Docker
+      - name: Verify MongoDB connection
         run: |
-          sudo apt-get update
-          # Add MongoDB repository
-          wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-          sudo apt-get update
-          # Install MongoDB client tools only
-          sudo apt-get install -y mongodb-org-shell
-          # Verify installation
-          mongo --version || echo "Mongo client installation failed, but continuing..."
+          docker run --network host mongo:4.4 mongo --host localhost --eval "db.runCommand({ ping: 1 })"
 
       # Backend setup
       - name: Install backend dependencies
@@ -45,6 +37,9 @@ jobs:
 
       - name: Run backend tests
         run: npm test --prefix backend
+        env:
+          # Make sure tests use localhost instead of 127.0.0.1
+          MONGO_URI: mongodb://localhost:27017/campaignQA_db_test
 
       # Frontend setup
       - name: Install frontend dependencies

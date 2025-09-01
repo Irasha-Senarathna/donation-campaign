@@ -2,6 +2,7 @@ const request = require("supertest");
 const { expect } = require("chai");
 const mongoose = require('mongoose');
 const app = require("../app"); // Import the Express app
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/campaignQA_db_test";
 let server;
 
 // Set global Mocha timeout
@@ -20,7 +21,7 @@ describe("User API Tests", function() {
       while (retries > 0 && !connected) {
         try {
           console.log(`Connecting to MongoDB (attempts left: ${retries})...`);
-          await mongoose.connect("mongodb://localhost:27017/campaignQA_db_test", {
+          await mongoose.connect(MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             serverSelectionTimeoutMS: 5000 // 5 second timeout for server selection
