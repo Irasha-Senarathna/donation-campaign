@@ -26,7 +26,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Verify MongoDB connection using Docker (simpler approach)
+      # Verify MongoDB connection using Docker
       - name: Verify MongoDB connection
         run: |
           docker run --network host mongo:4.4 mongo --host localhost --eval "db.runCommand({ ping: 1 })"
@@ -40,12 +40,20 @@ jobs:
         env:
           MONGO_URI: mongodb://localhost:27017/campaignQA_db_test
 
-      # Frontend setup
-      - name: Install frontend dependencies
-        run: npm install --prefix frontend
+      # Frontend setup - first install compatible TypeScript version
+      - name: Install compatible TypeScript version
+        run: |
+          cd frontend
+          npm install typescript@4.9.5 --save-dev
+          cd ..
 
-      - name: Install start-server-and-test
-        run: npm install --prefix frontend start-server-and-test --save-dev
+      # Then install other dependencies
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+          npm install start-server-and-test --save-dev
+          cd ..
 
       # Run UI tests
       - name: Run frontend UI tests
