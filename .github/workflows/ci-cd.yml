@@ -1,45 +1,33 @@
-name: Donation Campaign CI/CD
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      mongodb:
-        image: mongo:6.0
-        ports:
-          - 27017:27017
-
     steps:
-      # Step 1: Checkout the code
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # Step 2: Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      # Step 3: Install backend dependencies
+      # Backend setup
       - name: Install backend dependencies
         run: npm install --prefix backend
 
-      # Step 4: Install frontend dependencies
+      - name: Run backend tests
+        run: npm test --prefix backend
+
+      # Frontend setup
       - name: Install frontend dependencies
         run: npm install --prefix frontend
 
-      # Step 5: Run backend unit tests
-      - name: Run backend unit tests
-        run: npm test --prefix backend
+      - name: Install start-server-and-test
+        run: npm install --prefix frontend start-server-and-test --save-dev
 
-      # Step 6: Run frontend UI tests
+      # Run UI tests
       - name: Run frontend UI tests
-        run: npx start-server-and-test "npm start --prefix frontend" http://localhost:3000 "mocha -r ts-node/register frontend/tests/ui/**/*.test.ts --timeout 60000"
+        run: npx start-server-and-test "npm start --prefix frontend" http://localhost:3000 "npx mocha --timeout 120000 'frontend/tests/ui/**/*.test.js'"

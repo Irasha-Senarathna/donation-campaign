@@ -36,6 +36,11 @@
   },
   "proxy": "http://localhost:5000",
   "devDependencies": {
-    "start-server-and-test": "^2.0.13"
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.3.0",
+    "mocha": "^11.7.1",
+    "start-server-and-test": "^2.0.13",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }
