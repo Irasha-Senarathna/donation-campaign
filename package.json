@@ -1,0 +1,23 @@
+{
+  "name": "donation-campaign-e2e",
+  "private": true,
+  "scripts": {
+    "start:backend": "npm --prefix backend start",
+    "start:frontend": "npm --prefix frontend start",
+    "start:all": "concurrently -k \"npm: start:backend\" \"npm: start:frontend\"",
+    "test:run": "mocha -r ts-node/register tests/ui/**/*.test.ts --timeout 60000",
+    "test:ui": "start-server-and-test \"npm run start:all\" http://localhost:3000 \"npm run test:run\""
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.1",
+    "axios": "^1.7.2",
+    "chai": "^4.4.1",
+    "concurrently": "^8.2.2",
+    "mocha": "^10.4.0",
+    "selenium-webdriver": "^4.23.0",
+    "start-server-and-test": "^2.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
