@@ -13,7 +13,6 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:ui": "start-server-and-test \"npm start\" http://localhost:3000 \"mocha -r ts-node/register ../tests/ui/**/*.test.ts --timeout 60000\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,12 +33,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000",
-  "devDependencies": {
-    "@types/mocha": "^10.0.10",
-    "chai": "^6.0.1",
-    "mocha": "^11.7.1",
-    "selenium-webdriver": "^4.35.0",
-    "ts-node": "^10.9.2"
-  }
+  "proxy": "http://localhost:5000"
 }
